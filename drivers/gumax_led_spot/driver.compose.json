@@ -8,9 +8,9 @@
   "platforms": ["local"],
   "connectivity": ["rf433"],
   "images": {
-    "small": "/drivers/gumax_sunshade/assets/images/small.png",
-    "large": "/drivers/gumax_sunshade/assets/images/large.png",
-    "xlarge": "/drivers/gumax_sunshade/assets/images/xlarge.png"
+    "small": "/drivers/gumax_led_spot/assets/images/small.png",
+    "large": "/drivers/gumax_led_spot/assets/images/large.png",
+    "xlarge": "/drivers/gumax_led_spot/assets/images/xlarge.png"
   },
   "pair": [
     {
@@ -43,7 +43,7 @@
           {
             "name": "device",
             "type": "device",
-            "filter": "driver_id=gumax_sunshade"
+            "filter": "driver_id=gumax_led_spot"
           }
         ]
       },
@@ -57,7 +57,7 @@
           {
             "name": "device",
             "type": "device",
-            "filter": "driver_id=gumax_sunshade"
+            "filter": "driver_id=gumax_led_spot"
           }
         ]
       }
