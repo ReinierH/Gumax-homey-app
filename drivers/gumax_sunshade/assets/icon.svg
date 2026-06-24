@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- LED spot device icon -->
+  <ellipse cx="50" cy="30" rx="22" ry="12" fill="#1a73e8"/>
+  <path d="M28 30 Q50 72 72 30" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+  <ellipse cx="50" cy="30" rx="8" ry="4" fill="#fff" opacity="0.9"/>
+  <!-- Light rays -->
+  <path d="M36 54 L30 70" stroke="#f9a825" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+  <path d="M50 58 L50 76" stroke="#f9a825" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+  <path d="M64 54 L70 70" stroke="#f9a825" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+</svg>

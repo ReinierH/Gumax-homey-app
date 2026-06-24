@@ -1,0 +1,12 @@
+{
+  "sof": [5300, 530],
+  "words": [
+    [270, 565],
+    [565, 270]
+  ],
+  "eof": [5030],
+  "sensitivity": 0.3,
+  "minimalLength": 65,
+  "maximalLength": 65,
+  "repetitions": 8
+}

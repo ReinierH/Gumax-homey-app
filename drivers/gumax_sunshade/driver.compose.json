@@ -1,0 +1,66 @@
+{
+  "name": {
+    "en": "Gumax LED Spot",
+    "nl": "Gumax LED Spot"
+  },
+  "class": "light",
+  "capabilities": ["onoff"],
+  "platforms": ["local"],
+  "connectivity": ["rf433"],
+  "images": {
+    "small": "/drivers/gumax_sunshade/assets/images/small.png",
+    "large": "/drivers/gumax_sunshade/assets/images/large.png",
+    "xlarge": "/drivers/gumax_sunshade/assets/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "learn",
+      "navigation": {
+        "next": "list_devices"
+      }
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "flow": {
+    "actions": [
+      {
+        "id": "turn_on",
+        "title": {
+          "en": "Turn On",
+          "nl": "Inschakelen"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=gumax_sunshade"
+          }
+        ]
+      },
+      {
+        "id": "turn_off",
+        "title": {
+          "en": "Turn Off",
+          "nl": "Uitschakelen"
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=gumax_sunshade"
+          }
+        ]
+      }
+    ]
+  }
+}

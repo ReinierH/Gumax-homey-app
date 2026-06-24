@@ -1,0 +1,31 @@
+{
+  "id": "nl.computhings.gumax",
+  "version": "1.0.0",
+  "compatibility": ">=12.0.0",
+  "sdk": 3,
+  "platforms": ["local"],
+  "name": {
+    "en": "Gumax LED Spot",
+    "nl": "Gumax LED Spot"
+  },
+  "description": {
+    "en": "Control Gumax LED spots by learning your existing ASY-3501-1 remote control",
+    "nl": "Bedien Gumax LED spots door uw bestaande ASY-3501-1 afstandsbediening in te leren"
+  },
+  "tags": {
+    "en": ["gumax", "led", "light", "spot", "rf", "433", "outdoor"],
+    "nl": ["gumax", "led", "lamp", "spot", "rf", "433", "buiten"]
+  },
+  "category": ["appliances"],
+  "permissions": ["homey:wireless:433"],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Reinier Hasper",
+    "email": "reinier@computhings.nl"
+  },
+  "brandColor": "#1a73e8"
+}

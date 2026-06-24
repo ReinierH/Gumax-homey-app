@@ -1,0 +1,156 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "nl.computhings.gumax",
+  "version": "1.0.0",
+  "compatibility": ">=12.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Gumax LED Spot",
+    "nl": "Gumax LED Spot"
+  },
+  "description": {
+    "en": "Control Gumax LED spots by learning your existing ASY-3501-1 remote control",
+    "nl": "Bedien Gumax LED spots door uw bestaande ASY-3501-1 afstandsbediening in te leren"
+  },
+  "tags": {
+    "en": [
+      "gumax",
+      "led",
+      "light",
+      "spot",
+      "rf",
+      "433",
+      "outdoor"
+    ],
+    "nl": [
+      "gumax",
+      "led",
+      "lamp",
+      "spot",
+      "rf",
+      "433",
+      "buiten"
+    ]
+  },
+  "category": [
+    "appliances"
+  ],
+  "permissions": [
+    "homey:wireless:433"
+  ],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Reinier Hasper",
+    "email": "reinier@computhings.nl"
+  },
+  "brandColor": "#1a73e8",
+  "drivers": [
+    {
+      "name": {
+        "en": "Gumax LED Spot",
+        "nl": "Gumax LED Spot"
+      },
+      "class": "light",
+      "capabilities": [
+        "onoff"
+      ],
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "rf433"
+      ],
+      "images": {
+        "small": "/drivers/gumax_sunshade/assets/images/small.png",
+        "large": "/drivers/gumax_sunshade/assets/images/large.png",
+        "xlarge": "/drivers/gumax_sunshade/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "learn",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "flow": {
+        "actions": [
+          {
+            "id": "turn_on",
+            "title": {
+              "en": "Turn On",
+              "nl": "Inschakelen"
+            },
+            "args": [
+              {
+                "name": "device",
+                "type": "device",
+                "filter": "driver_id=gumax_sunshade"
+              }
+            ]
+          },
+          {
+            "id": "turn_off",
+            "title": {
+              "en": "Turn Off",
+              "nl": "Uitschakelen"
+            },
+            "args": [
+              {
+                "name": "device",
+                "type": "device",
+                "filter": "driver_id=gumax_sunshade"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "gumax_sunshade"
+    }
+  ],
+  "signals": {
+    "433": {
+      "aok": {
+        "sof": [
+          5300,
+          530
+        ],
+        "words": [
+          [
+            270,
+            565
+          ],
+          [
+            565,
+            270
+          ]
+        ],
+        "eof": [
+          5030
+        ],
+        "sensitivity": 0.3,
+        "minimalLength": 65,
+        "maximalLength": 65,
+        "repetitions": 8
+      }
+    }
+  }
+}

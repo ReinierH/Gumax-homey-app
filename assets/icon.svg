@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Gumax LED Spot icon -->
+  <!-- Light housing / spot -->
+  <ellipse cx="50" cy="30" rx="22" ry="12" fill="#1a73e8"/>
+  <path d="M28 30 Q50 72 72 30" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+  <!-- LED chip -->
+  <ellipse cx="50" cy="30" rx="8" ry="4" fill="#fff" opacity="0.9"/>
+  <!-- Light rays -->
+  <path d="M36 54 L30 70" stroke="#f9a825" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+  <path d="M50 58 L50 76" stroke="#f9a825" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+  <path d="M64 54 L70 70" stroke="#f9a825" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+  <!-- RF waves -->
+  <path d="M76 18 Q80 14 84 18" stroke="#34a853" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M79 18 Q83 11 87 18" stroke="#34a853" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+</svg>

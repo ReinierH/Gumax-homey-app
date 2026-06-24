@@ -1,0 +1,11 @@
+{
+  "pair": {
+    "learn": {
+      "listening_title": "Listening…",
+      "listening_on": "Press the ON button on your Gumax remote now.",
+      "listening_off": "Press the OFF button on your Gumax remote now.",
+      "timeout": "Timed out: no signal received. Please try again.",
+      "device_name": "Gumax LED Spot"
+    }
+  }
+}

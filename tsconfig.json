@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "lib": ["ES2019"],
+    "module": "CommonJS",
+    "target": "ES2019",
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "outDir": ".homeybuild",
+    "rootDir": ".",
+    "skipLibCheck": true,
+    "declaration": false,
+    "typeRoots": ["./node_modules/@types"]
+  },
+  "include": [
+    "app.ts",
+    "drivers/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
