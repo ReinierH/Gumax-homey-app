@@ -1,11 +1,11 @@
 {
   "pair": {
     "learn": {
-      "listening_title": "Luisteren…",
-      "listening_on": "Druk nu op de AAN-knop van uw Gumax afstandsbediening.",
-      "listening_off": "Druk nu op de UIT-knop van uw Gumax afstandsbediening.",
       "timeout": "Time-out: geen signaal ontvangen. Probeer opnieuw.",
       "device_name": "Gumax LED Spot"
+    },
+    "shade": {
+      "device_name": "Gumax Zonwering"
     }
   }
 }

@@ -8,12 +8,12 @@
     "local"
   ],
   "name": {
-    "en": "Gumax LED Spot",
-    "nl": "Gumax LED Spot"
+    "en": "Gumax",
+    "nl": "Gumax"
   },
   "description": {
-    "en": "Control Gumax LED spots by learning your existing ASY-3501-1 remote control",
-    "nl": "Bedien Gumax LED spots door uw bestaande ASY-3501-1 afstandsbediening in te leren"
+    "en": "Control Gumax LED spots and sunshading systems by learning your existing ASY-3501-1 remote",
+    "nl": "Bedien Gumax LED spots en zonwering door uw bestaande ASY-3501-1 afstandsbediening in te leren"
   },
   "tags": {
     "en": [
@@ -21,18 +21,20 @@
       "led",
       "light",
       "spot",
+      "sunshade",
+      "blind",
       "rf",
-      "433",
-      "outdoor"
+      "433"
     ],
     "nl": [
       "gumax",
       "led",
       "lamp",
       "spot",
+      "zonwering",
+      "screen",
       "rf",
-      "433",
-      "buiten"
+      "433"
     ]
   },
   "category": [
@@ -94,7 +96,7 @@
       "flow": {
         "actions": [
           {
-            "id": "turn_on",
+            "id": "led_turn_on",
             "title": {
               "en": "Turn On",
               "nl": "Inschakelen"
@@ -108,7 +110,7 @@
             ]
           },
           {
-            "id": "turn_off",
+            "id": "led_turn_off",
             "title": {
               "en": "Turn Off",
               "nl": "Uitschakelen"
@@ -124,6 +126,93 @@
         ]
       },
       "id": "gumax_led_spot"
+    },
+    {
+      "name": {
+        "en": "Gumax Sunshade",
+        "nl": "Gumax Zonwering"
+      },
+      "class": "blinds",
+      "capabilities": [
+        "windowcoverings_state"
+      ],
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "rf433"
+      ],
+      "images": {
+        "small": "/drivers/gumax_sunshade/assets/images/small.png",
+        "large": "/drivers/gumax_sunshade/assets/images/large.png",
+        "xlarge": "/drivers/gumax_sunshade/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "learn",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "flow": {
+        "actions": [
+          {
+            "id": "shade_up",
+            "title": {
+              "en": "Move Up",
+              "nl": "Omhoog"
+            },
+            "args": [
+              {
+                "name": "device",
+                "type": "device",
+                "filter": "driver_id=gumax_sunshade"
+              }
+            ]
+          },
+          {
+            "id": "shade_stop",
+            "title": {
+              "en": "Stop",
+              "nl": "Stop"
+            },
+            "args": [
+              {
+                "name": "device",
+                "type": "device",
+                "filter": "driver_id=gumax_sunshade"
+              }
+            ]
+          },
+          {
+            "id": "shade_down",
+            "title": {
+              "en": "Move Down",
+              "nl": "Omlaag"
+            },
+            "args": [
+              {
+                "name": "device",
+                "type": "device",
+                "filter": "driver_id=gumax_sunshade"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "gumax_sunshade"
     }
   ],
   "signals": {
@@ -150,6 +239,31 @@
         "minimalLength": 65,
         "maximalLength": 65,
         "repetitions": 8
+      },
+      "gumax": {
+        "sof": [
+          5400,
+          120,
+          370,
+          9000
+        ],
+        "words": [
+          [
+            1110,
+            370
+          ],
+          [
+            370,
+            1100
+          ]
+        ],
+        "eof": [
+          9300
+        ],
+        "sensitivity": 0.4,
+        "minimalLength": 24,
+        "maximalLength": 24,
+        "repetitions": 10
       }
     }
   }

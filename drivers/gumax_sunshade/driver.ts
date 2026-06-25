@@ -1,29 +1,35 @@
 import Homey from 'homey';
-import { decodeFrame } from './protocol';
+import { decodeFrame } from './aok';
 
-const SIGNAL_ID     = 'gumax';
+const SIGNAL_ID     = 'aok';
 const LEARN_TIMEOUT = 30_000;
 
 interface LearnedDevice {
   name:  string;
   data:  { id: string };
-  store: { remoteId: number };
+  store: { remoteId: number; channel: number };
 }
 
-export default class GumaxLedDriver extends Homey.Driver {
+export default class GumaxShadeDriver extends Homey.Driver {
   async onInit(): Promise<void> {
-    this.log('Gumax LED driver initialized');
+    this.log('Gumax sunshade driver initialized');
 
     this.homey.flow
-      .getActionCard('led_turn_on')
+      .getActionCard('shade_up')
       .registerRunListener(async ({ device }: { device: Homey.Device }) => {
-        await (device as any).cmdOn();
+        await (device as any).cmdUp();
       });
 
     this.homey.flow
-      .getActionCard('led_turn_off')
+      .getActionCard('shade_stop')
       .registerRunListener(async ({ device }: { device: Homey.Device }) => {
-        await (device as any).cmdOff();
+        await (device as any).cmdStop();
+      });
+
+    this.homey.flow
+      .getActionCard('shade_down')
+      .registerRunListener(async ({ device }: { device: Homey.Device }) => {
+        await (device as any).cmdDown();
       });
   }
 
@@ -50,19 +56,22 @@ export default class GumaxLedDriver extends Homey.Driver {
           if (!first || settled) return;
 
           const frame = decodeFrame(payload);
-          if (!frame) return; // unexpected length — ignore
+          if (!frame) {
+            this.log('Ignoring non-A-OK frame during learn');
+            return;
+          }
 
           settled = true;
           clearTimeout(timer);
           signal.removeListener('payload', onPayload);
           cleanup();
 
-          this.log(`Learned remote: id=0x${frame.remoteId.toString(16).padStart(5, '0')} cmd=0x${frame.command.toString(16)}`);
+          this.log(`Learned: id=0x${frame.remoteId.toString(16)} ch=0x${frame.channel.toString(16)} cmd=0x${frame.command.toString(16)}`);
 
           learnedDevice = {
-            name:  this.homey.__('pair.learn.device_name'),
-            data:  { id: frame.remoteId.toString(16).padStart(5, '0') },
-            store: { remoteId: frame.remoteId },
+            name:  this.homey.__('pair.shade.device_name'),
+            data:  { id: `${frame.remoteId.toString(16).padStart(6, '0')}-${frame.channel.toString(16).padStart(4, '0')}` },
+            store: { remoteId: frame.remoteId, channel: frame.channel },
           };
 
           resolve();

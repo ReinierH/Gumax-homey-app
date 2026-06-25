@@ -34,7 +34,7 @@
   "flow": {
     "actions": [
       {
-        "id": "turn_on",
+        "id": "led_turn_on",
         "title": {
           "en": "Turn On",
           "nl": "Inschakelen"
@@ -48,7 +48,7 @@
         ]
       },
       {
-        "id": "turn_off",
+        "id": "led_turn_off",
         "title": {
           "en": "Turn Off",
           "nl": "Uitschakelen"

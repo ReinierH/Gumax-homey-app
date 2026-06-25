@@ -5,16 +5,16 @@
   "sdk": 3,
   "platforms": ["local"],
   "name": {
-    "en": "Gumax LED Spot",
-    "nl": "Gumax LED Spot"
+    "en": "Gumax",
+    "nl": "Gumax"
   },
   "description": {
-    "en": "Control Gumax LED spots by learning your existing ASY-3501-1 remote control",
-    "nl": "Bedien Gumax LED spots door uw bestaande ASY-3501-1 afstandsbediening in te leren"
+    "en": "Control Gumax LED spots and sunshading systems by learning your existing ASY-3501-1 remote",
+    "nl": "Bedien Gumax LED spots en zonwering door uw bestaande ASY-3501-1 afstandsbediening in te leren"
   },
   "tags": {
-    "en": ["gumax", "led", "light", "spot", "rf", "433", "outdoor"],
-    "nl": ["gumax", "led", "lamp", "spot", "rf", "433", "buiten"]
+    "en": ["gumax", "led", "light", "spot", "sunshade", "blind", "rf", "433"],
+    "nl": ["gumax", "led", "lamp", "spot", "zonwering", "screen", "rf", "433"]
   },
   "category": ["appliances"],
   "permissions": ["homey:wireless:433"],
