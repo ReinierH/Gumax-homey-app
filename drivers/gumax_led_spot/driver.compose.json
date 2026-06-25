@@ -4,7 +4,7 @@
     "nl": "Gumax LED Spot"
   },
   "class": "light",
-  "capabilities": ["onoff"],
+  "capabilities": ["onoff", "dim"],
   "platforms": ["local"],
   "connectivity": ["rf433"],
   "images": {

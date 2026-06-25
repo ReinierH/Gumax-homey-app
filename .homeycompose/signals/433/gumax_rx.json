@@ -1,7 +1,5 @@
 {
-  "sof": [5400, 120, 370, 9000],
   "words": [[1110, 370], [370, 1100]],
-  "eof": [9300],
   "sensitivity": 0.4,
   "minimalLength": 24,
   "maximalLength": 24,
