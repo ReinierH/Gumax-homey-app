@@ -75,3 +75,13 @@ export function decodeFrame(payload: number[]): GumaxLedFrame | null {
 export function dimToLevelIndex(dim: number): number {
   return Math.min(5, Math.floor(dim * 6));
 }
+
+/** Map a received level command back to a Homey dim value (0.0–1.0). */
+export const CMD_TO_DIM: Record<number, number> = {
+  [CMD_LEVEL_1]: 1 / 6,
+  [CMD_LEVEL_2]: 2 / 6,
+  [CMD_LEVEL_3]: 3 / 6,
+  [CMD_LEVEL_4]: 4 / 6,
+  [CMD_LEVEL_5]: 5 / 6,
+  [CMD_LEVEL_6]: 6 / 6,
+};

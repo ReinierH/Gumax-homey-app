@@ -1,7 +1,8 @@
 import Homey from 'homey';
 import { decodeFrame, FRAME_BITS } from './protocol';
 
-const SIGNAL_ID     = 'gumax_rx';
+const SIGNAL_TX_ID  = 'gumax';
+const SIGNAL_RX_ID  = 'gumax_rx';
 const LEARN_TIMEOUT = 30_000;
 
 interface LearnedDevice {
@@ -19,25 +20,29 @@ function fmtPayload(payload: number[]): string {
 class GumaxLedDriver extends Homey.Driver {
   async onInit(): Promise<void> {
     this.log('Gumax LED driver initialized');
+
+    // Enable RX permanently so devices can sniff physical remote presses.
+    const signalRx = this.homey.rf.getSignal433(SIGNAL_RX_ID);
+    signalRx.enableRX().catch((err: Error) => this.error('Failed to enable RX:', err.message));
   }
 
   async onPair(session: Homey.Driver.PairSession): Promise<void> {
     let learnedDevice: LearnedDevice | null = null;
 
+    // RX is already enabled by onInit — just attach a listener for pairing.
     session.setHandler('learn', async (): Promise<void> => {
-      const signal = this.homey.rf.getSignal433(SIGNAL_ID);
-      this.log(`[learn] enabling RX on "${SIGNAL_ID}"`);
+      const signal = this.homey.rf.getSignal433(SIGNAL_RX_ID);
+      this.log(`[learn] listening on "${SIGNAL_RX_ID}"`);
 
       await new Promise<void>((resolve, reject) => {
         let settled = false;
         let rxCount = 0;
 
-        const cleanup = () => signal.disableRX().catch((e: Error) => this.log('[learn] disableRX error:', e.message));
+        const cleanup = () => signal.removeListener('payload', onPayload);
 
         const timer = setTimeout(() => {
           if (settled) return;
           settled = true;
-          signal.removeListener('payload', onPayload);
           cleanup();
           this.log(`[learn] TIMEOUT — received ${rxCount} payload event(s)`);
           reject(new Error(this.homey.__('pair.learn.timeout')));
@@ -54,7 +59,6 @@ class GumaxLedDriver extends Homey.Driver {
 
           settled = true;
           clearTimeout(timer);
-          signal.removeListener('payload', onPayload);
           cleanup();
 
           this.log(`[learn] SUCCESS remoteId=0x${frame.remoteId.toString(16).padStart(5, '0')} cmd=0x${frame.command.toString(16)}`);
@@ -69,16 +73,6 @@ class GumaxLedDriver extends Homey.Driver {
         };
 
         signal.on('payload', onPayload);
-        signal.enableRX()
-          .then(() => this.log(`[learn] "${SIGNAL_ID}" RX enabled OK`))
-          .catch((err: Error) => {
-            if (settled) return;
-            settled = true;
-            clearTimeout(timer);
-            signal.removeListener('payload', onPayload);
-            this.log('[learn] enableRX FAILED:', err.message);
-            reject(err);
-          });
       });
     });
 
