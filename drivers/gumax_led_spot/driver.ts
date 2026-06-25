@@ -10,21 +10,9 @@ interface LearnedDevice {
   store: { remoteId: number };
 }
 
-export default class GumaxLedDriver extends Homey.Driver {
+class GumaxLedDriver extends Homey.Driver {
   async onInit(): Promise<void> {
     this.log('Gumax LED driver initialized');
-
-    this.homey.flow
-      .getActionCard('led_turn_on')
-      .registerRunListener(async ({ device }: { device: Homey.Device }) => {
-        await (device as any).cmdOn();
-      });
-
-    this.homey.flow
-      .getActionCard('led_turn_off')
-      .registerRunListener(async ({ device }: { device: Homey.Device }) => {
-        await (device as any).cmdOff();
-      });
   }
 
   async onPair(session: Homey.Driver.PairSession): Promise<void> {
@@ -85,3 +73,5 @@ export default class GumaxLedDriver extends Homey.Driver {
     });
   }
 }
+
+export = GumaxLedDriver;

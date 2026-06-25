@@ -3,7 +3,7 @@ import { buildFrame, CMD_ON, CMD_OFF } from './protocol';
 
 const SIGNAL_ID = 'gumax';
 
-export default class GumaxLedDevice extends Homey.Device {
+class GumaxLedDevice extends Homey.Device {
   async onInit(): Promise<void> {
     this.log(`Gumax LED device initialized: ${this.getName()}`);
     this.registerCapabilityListener('onoff', this.onCapabilityOnoff.bind(this));
@@ -38,3 +38,5 @@ export default class GumaxLedDevice extends Homey.Device {
     await signal.tx(frame);
   }
 }
+
+export = GumaxLedDevice;

@@ -3,7 +3,7 @@ import { AOK_CMD_DOWN, AOK_CMD_STOP, AOK_CMD_UP, buildFrame } from './aok';
 
 const SIGNAL_ID = 'aok';
 
-export default class GumaxShadeDevice extends Homey.Device {
+class GumaxShadeDevice extends Homey.Device {
   async onInit(): Promise<void> {
     this.log(`Gumax sunshade device initialized: ${this.getName()}`);
     this.registerCapabilityListener('windowcoverings_state', this.onWindowCoveringsState.bind(this));
@@ -48,3 +48,5 @@ export default class GumaxShadeDevice extends Homey.Device {
     await signal.tx(frame);
   }
 }
+
+export = GumaxShadeDevice;

@@ -30,51 +30,5 @@
       "id": "add_devices",
       "template": "add_devices"
     }
-  ],
-  "flow": {
-    "actions": [
-      {
-        "id": "shade_up",
-        "title": {
-          "en": "Move Up",
-          "nl": "Omhoog"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=gumax_sunshade"
-          }
-        ]
-      },
-      {
-        "id": "shade_stop",
-        "title": {
-          "en": "Stop",
-          "nl": "Stop"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=gumax_sunshade"
-          }
-        ]
-      },
-      {
-        "id": "shade_down",
-        "title": {
-          "en": "Move Down",
-          "nl": "Omlaag"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=gumax_sunshade"
-          }
-        ]
-      }
-    ]
-  }
+  ]
 }

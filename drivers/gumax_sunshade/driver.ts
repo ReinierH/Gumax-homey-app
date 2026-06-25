@@ -10,27 +10,9 @@ interface LearnedDevice {
   store: { remoteId: number; channel: number };
 }
 
-export default class GumaxShadeDriver extends Homey.Driver {
+class GumaxShadeDriver extends Homey.Driver {
   async onInit(): Promise<void> {
     this.log('Gumax sunshade driver initialized');
-
-    this.homey.flow
-      .getActionCard('shade_up')
-      .registerRunListener(async ({ device }: { device: Homey.Device }) => {
-        await (device as any).cmdUp();
-      });
-
-    this.homey.flow
-      .getActionCard('shade_stop')
-      .registerRunListener(async ({ device }: { device: Homey.Device }) => {
-        await (device as any).cmdStop();
-      });
-
-    this.homey.flow
-      .getActionCard('shade_down')
-      .registerRunListener(async ({ device }: { device: Homey.Device }) => {
-        await (device as any).cmdDown();
-      });
   }
 
   async onPair(session: Homey.Driver.PairSession): Promise<void> {
@@ -94,3 +76,5 @@ export default class GumaxShadeDriver extends Homey.Driver {
     });
   }
 }
+
+export = GumaxShadeDriver;

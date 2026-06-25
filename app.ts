@@ -2,8 +2,8 @@ import Homey from 'homey';
 
 class GumaxApp extends Homey.App {
   async onInit(): Promise<void> {
-    this.log('Gumax Sunshading app initialized');
+    this.log('Gumax app initialized');
   }
 }
 
-module.exports = GumaxApp;
+export = GumaxApp;

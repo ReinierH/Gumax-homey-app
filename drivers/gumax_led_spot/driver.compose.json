@@ -30,37 +30,5 @@
       "id": "add_devices",
       "template": "add_devices"
     }
-  ],
-  "flow": {
-    "actions": [
-      {
-        "id": "led_turn_on",
-        "title": {
-          "en": "Turn On",
-          "nl": "Inschakelen"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=gumax_led_spot"
-          }
-        ]
-      },
-      {
-        "id": "led_turn_off",
-        "title": {
-          "en": "Turn Off",
-          "nl": "Uitschakelen"
-        },
-        "args": [
-          {
-            "name": "device",
-            "type": "device",
-            "filter": "driver_id=gumax_led_spot"
-          }
-        ]
-      }
-    ]
-  }
+  ]
 }
