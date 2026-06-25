@@ -1,15 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- Gumax LED Spot icon -->
-  <!-- Light housing / spot -->
-  <ellipse cx="50" cy="30" rx="22" ry="12" fill="#1a73e8"/>
-  <path d="M28 30 Q50 72 72 30" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
-  <!-- LED chip -->
-  <ellipse cx="50" cy="30" rx="8" ry="4" fill="#fff" opacity="0.9"/>
-  <!-- Light rays -->
-  <path d="M36 54 L30 70" stroke="#f9a825" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
-  <path d="M50 58 L50 76" stroke="#f9a825" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
-  <path d="M64 54 L70 70" stroke="#f9a825" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
-  <!-- RF waves -->
-  <path d="M76 18 Q80 14 84 18" stroke="#34a853" stroke-width="2" fill="none" stroke-linecap="round"/>
-  <path d="M79 18 Q83 11 87 18" stroke="#34a853" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="172 188 364 364">
+  <path fill="white" d="M441.9,535.1h-69.8v-.2c-92.9-.8-164.9-71.9-164.9-165.2s70.9-165.3,164.8-165.3.3,0,.5,0c22.6,0,44.5,4.5,64.8,13.1l-25.2,54.1c-12.8-5.6-26.2-8-39.6-8.1-.2,0-.3,0-.5,0-58.4,0-99.3,44-99.3,106.1s42,105.6,99.8,106.1h0s69.4,0,69.4,0v-77.9l-43.8-11.3v-59.3l102.5,24.9-.7,150.8-58,31.9Z"/>
 </svg>
