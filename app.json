@@ -203,6 +203,45 @@
         "minimalLength": 24,
         "maximalLength": 24,
         "repetitions": 50
+      },
+      "gumax_shutter": {
+        "sof": [
+          5000,
+          615
+        ],
+        "words": [
+          [
+            280,
+            600
+          ],
+          [
+            600,
+            280
+          ]
+        ],
+        "eof": [
+          4980
+        ],
+        "sensitivity": 0.4,
+        "minimalLength": 64,
+        "maximalLength": 64,
+        "repetitions": 8
+      },
+      "gumax_shutter_rx": {
+        "words": [
+          [
+            280,
+            600
+          ],
+          [
+            600,
+            280
+          ]
+        ],
+        "sensitivity": 0.4,
+        "minimalLength": 64,
+        "maximalLength": 64,
+        "repetitions": 8
       }
     }
   }

@@ -5,6 +5,7 @@
       "device_name": "Gumax LED Spot"
     },
     "shade": {
+      "timeout": "Time-out: geen signaal ontvangen. Probeer opnieuw.",
       "device_name": "Gumax Zonwering"
     }
   }

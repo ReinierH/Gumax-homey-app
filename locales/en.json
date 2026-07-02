@@ -5,6 +5,7 @@
       "device_name": "Gumax LED Spot"
     },
     "shade": {
+      "timeout": "Timed out: no signal received. Please try again.",
       "device_name": "Gumax Sunshade"
     }
   }

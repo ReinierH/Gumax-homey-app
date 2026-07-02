@@ -1,0 +1,7 @@
+{
+  "words": [[280, 600], [600, 280]],
+  "sensitivity": 0.4,
+  "minimalLength": 64,
+  "maximalLength": 64,
+  "repetitions": 8
+}

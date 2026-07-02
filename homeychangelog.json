@@ -1,0 +1,6 @@
+{
+  "1.0.0": {
+    "en": "Initial release. Learn your Gumax ASY-3501-1 remote and control LED spots from Homey. Supports on/off and 6 brightness levels. Physical remote presses are reflected in the Homey device state.",
+    "nl": "Eerste versie. Leer uw Gumax ASY-3501-1 afstandsbediening in en bedien LED spots vanuit Homey. Ondersteunt aan/uit en 6 helderheidsniveaus. Bediening via de fysieke afstandsbediening wordt weergegeven in de Homey apparaatstatus."
+  }
+}

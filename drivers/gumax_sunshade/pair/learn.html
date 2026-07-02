@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Afstandsbediening inleren</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; color: #1a1a2e; }
+    .wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 32px 24px; text-align: center; }
+    .icon { width: 96px; height: 96px; margin: 0 auto 24px; }
+    h2 { font-size: 20px; font-weight: 600; margin-bottom: 12px; }
+    p { font-size: 15px; line-height: 1.6; color: #555; max-width: 340px; margin-bottom: 28px; }
+    .tip { font-size: 13px; color: #888; max-width: 320px; margin-bottom: 28px; }
+    .btn { display: inline-block; padding: 12px 32px; background: #1a73e8; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    .btn:hover { background: #1558c0; }
+    .pulse-ring { width: 80px; height: 80px; border-radius: 50%; background: rgba(26,115,232,0.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.12); opacity: 0.7; } }
+    .badge { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+    .badge.ok  { background: #34a853; }
+    .badge.err { background: #ea4335; }
+    .step { display: none; }
+    .step.active { display: flex; flex-direction: column; align-items: center; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Instructions -->
+  <div id="step-instructions" class="step active">
+    <!-- Shutter / blind icon -->
+    <svg class="icon" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="12" y="10" width="72" height="76" rx="4" fill="#e8f0fe" stroke="#1a73e8" stroke-width="3"/>
+      <line x1="12" y1="28" x2="84" y2="28" stroke="#1a73e8" stroke-width="2.5"/>
+      <line x1="12" y1="42" x2="84" y2="42" stroke="#1a73e8" stroke-width="2.5"/>
+      <line x1="12" y1="56" x2="84" y2="56" stroke="#1a73e8" stroke-width="2.5"/>
+      <line x1="12" y1="70" x2="84" y2="70" stroke="#1a73e8" stroke-width="2.5"/>
+      <rect x="38" y="6" width="20" height="8" rx="3" fill="#1a73e8"/>
+    </svg>
+    <h2>Afstandsbediening inleren</h2>
+    <p>Selecteer het gewenste <strong>kanaal</strong> op uw Gumax afstandsbediening en druk daarna op <strong>Openen</strong>, <strong>Sluiten</strong> of <strong>Stoppen</strong>.</p>
+    <p class="tip">Wilt u alle zonweringen tegelijk aansturen? Druk dan op de knop voor <strong>Alle kanalen</strong>.</p>
+    <button class="btn" onclick="startLearn()">Starten</button>
+  </div>
+
+  <!-- Listening -->
+  <div id="step-listening" class="step">
+    <div class="pulse-ring">
+      <svg width="36" height="36" fill="none" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3" fill="#1a73e8"/>
+        <path d="M6.3 6.3a8 8 0 0 0 0 11.4M17.7 6.3a8 8 0 0 1 0 11.4" stroke="#1a73e8" stroke-width="2" stroke-linecap="round"/>
+        <path d="M3.5 3.5a13 13 0 0 0 0 17M20.5 3.5a13 13 0 0 1 0 17" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+      </svg>
+    </div>
+    <h2>Luisteren…</h2>
+    <p>Druk nu op een knop op de afstandsbediening (kanaal reeds ingesteld).</p>
+  </div>
+
+  <!-- Success -->
+  <div id="step-success" class="step">
+    <div class="badge ok">
+      <svg width="28" height="28" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2>Afstandsbediening ingeleerd!</h2>
+    <p>Het kanaal en de afstandsbediening zijn herkend. Klik op Volgende om het apparaat toe te voegen.</p>
+    <button class="btn" onclick="Homey.nextView()">Volgende</button>
+  </div>
+
+  <!-- Error -->
+  <div id="step-error" class="step">
+    <div class="badge err">
+      <svg width="28" height="28" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+    <h2>Geen signaal ontvangen</h2>
+    <p id="error-msg">Zorg dat u op een knop drukt terwijl Homey luistert.</p>
+    <button class="btn" onclick="reset()">Opnieuw proberen</button>
+  </div>
+
+</div>
+<script>
+  function show(id) {
+    ['step-instructions','step-listening','step-success','step-error'].forEach(function(s) {
+      document.getElementById(s).classList.toggle('active', s === id);
+    });
+  }
+
+  function reset() { show('step-instructions'); }
+
+  function startLearn() {
+    show('step-listening');
+    Homey.emit('learn', null, function(err) {
+      if (err) {
+        document.getElementById('error-msg').textContent = (err && err.message) || 'Onbekende fout';
+        show('step-error');
+        return;
+      }
+      show('step-success');
+    });
+  }
+
+  Homey.ready(function() {});
+</script>
+</body>
+</html>
