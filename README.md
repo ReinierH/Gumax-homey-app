@@ -69,6 +69,32 @@ The app works by learning your existing physical remote. No hub or Wi-Fi adapter
 
 To control all shutters at once, use the **All channels** button on the remote during pairing.
 
+## App store publishing checklist
+
+The CLI validation (`homey app validate --level publish`) passes, but the following must be completed before submitting to the Homey App Store:
+
+### Images
+
+- [ ] **Sunshade driver images** — the current images in `drivers/gumax_sunshade/assets/images/` are placeholders. Replace with real images:
+  - `small.png` — 75×75 px
+  - `large.png` — 500×500 px
+  - `xlarge.png` — 1000×1000 px
+  
+  Should show a clean icon of a motorised sunshade/blind on a transparent or white background.
+
+### Testing
+
+- [ ] **End-to-end pairing test for the sunshade driver** — verify that learning a remote, controlling open/close/stop, and physical remote state sync all work reliably on a real Gumax motor.
+- [ ] **Multi-channel test** — verify that pairing on individual channels and the "all channels" button both work correctly.
+- [ ] **LED spot pairing test** — confirm the RF learning flow works end-to-end on a fresh Homey install.
+
+### Submission
+
+- [ ] Run `homey app publish` and complete the store submission form.
+- [ ] Add a support URL or contact email to the app store listing.
+
+---
+
 ## Development
 
 ```bash
