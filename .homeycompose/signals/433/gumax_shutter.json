@@ -1,9 +1,9 @@
 {
-  "sof": [5000, 615],
+  "agc": [5000, 615],
   "words": [[280, 600], [600, 280]],
-  "eof": [4980],
   "sensitivity": 0.4,
+  "interval": 5000,
   "minimalLength": 64,
   "maximalLength": 64,
-  "repetitions": 8
+  "repetitions": 20
 }

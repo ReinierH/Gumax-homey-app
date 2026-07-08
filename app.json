@@ -205,7 +205,7 @@
         "repetitions": 50
       },
       "gumax_shutter": {
-        "sof": [
+        "agc": [
           5000,
           615
         ],
@@ -219,13 +219,11 @@
             280
           ]
         ],
-        "eof": [
-          4980
-        ],
         "sensitivity": 0.4,
+        "interval": 5000,
         "minimalLength": 64,
         "maximalLength": 64,
-        "repetitions": 8
+        "repetitions": 20
       },
       "gumax_shutter_rx": {
         "words": [

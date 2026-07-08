@@ -12,7 +12,7 @@
 //   bit 0 → HIGH 280 µs + LOW 600 µs   (short high, long low)
 //   bit 1 → HIGH 600 µs + LOW 280 µs   (long high, short low)
 //
-// No SOF/preamble. Inter-frame gap ~4980 µs LOW (EOF between repeats).
+// Preamble (SOF): LOW ~4980 µs gap + HIGH ~5000 µs sync + LOW ~615 µs lead-in, before every frame.
 
 export const FRAME_BITS = 64;
 
@@ -26,14 +26,16 @@ export const CH_ALL = 0xFFFF;
 // Primary command bytes
 export const CMD_OPEN  = 0x0B;
 export const CMD_CLOSE = 0x43;
-export const CMD_STOP  = 0x23;
 
-// Hold/repeat variants sent by the physical remote while button is held.
-// Not sent by Homey, but received via sniffer and normalized to the primary.
+// STOP: the motor ignores the initial code (0x23) and only responds to the
+// sustained code (0x5A). We send both in sequence to mirror the physical remote.
+export const CMD_STOP_INITIAL   = 0x23;
+export const CMD_STOP_SUSTAINED = 0x5A;
+
+// Hold/repeat variants for open/close (received from physical remote via sniffer).
 const CMD_OPEN_HOLD    = 0x8B;  // CMD_OPEN  | 0x80
 const CMD_OPEN_SUSTAIN = 0x55;  // sustained hold phase
 const CMD_CLOSE_HOLD   = 0xC3;  // CMD_CLOSE | 0x80
-const CMD_STOP_HOLD    = 0x5A;
 
 export interface GumaxShutterFrame {
   remoteId:    number;  // 32-bit remote address
@@ -95,7 +97,7 @@ export function decodeFrame(payload: number[]): GumaxShutterFrame | null {
 export function normalizePrimary(command: number): number {
   if (command === CMD_OPEN_HOLD || command === CMD_OPEN_SUSTAIN) return CMD_OPEN;
   if (command === CMD_CLOSE_HOLD) return CMD_CLOSE;
-  if (command === CMD_STOP_HOLD)  return CMD_STOP;
+  if (command === CMD_STOP_INITIAL || command === CMD_STOP_SUSTAINED) return CMD_STOP_SUSTAINED;
   return command;
 }
 

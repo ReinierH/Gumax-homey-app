@@ -1,7 +1,7 @@
 import Homey from 'homey';
 import {
   buildFrame, decodeFrame,
-  CMD_OPEN, CMD_CLOSE, CMD_STOP,
+  CMD_OPEN, CMD_CLOSE, CMD_STOP_INITIAL, CMD_STOP_SUSTAINED,
   channelMatches, normalizePrimary,
 } from './protocol';
 
@@ -48,7 +48,7 @@ class GumaxShadeDevice extends Homey.Device {
       case CMD_CLOSE:
         await this.setCapabilityValue('windowcoverings_state', 'down');
         break;
-      case CMD_STOP:
+      case CMD_STOP_SUSTAINED:
         await this.setCapabilityValue('windowcoverings_state', 'idle');
         break;
     }
@@ -58,9 +58,16 @@ class GumaxShadeDevice extends Homey.Device {
     switch (value) {
       case 'up':   return this.transmit(CMD_OPEN);
       case 'down': return this.transmit(CMD_CLOSE);
-      case 'idle': return this.transmit(CMD_STOP);
+      case 'idle': return this.transmitStop();
       default: throw new Error(`Unknown state: ${value}`);
     }
+  }
+
+  // Mirrors the physical remote burst: ~10× 0x23 (initial) then ~10× 0x5A (sustained).
+  // The motor only responds to 0x5A; the initial burst is sent for fidelity.
+  private async transmitStop(): Promise<void> {
+    await this.transmit(CMD_STOP_INITIAL);
+    await this.transmit(CMD_STOP_SUSTAINED);
   }
 
   private async transmit(command: number): Promise<void> {
