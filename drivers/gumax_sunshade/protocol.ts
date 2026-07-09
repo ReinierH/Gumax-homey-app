@@ -1,6 +1,6 @@
 // Gumax shutter — 433 MHz protocol
-// Reverse engineered from 15 VCD captures (4 channels × open/close/stop + "alles").
-// All timings, frame layout and checksum verified against every capture.
+// Reverse engineered from 21 VCD captures (6 channels × open/close/stop + "all").
+// All timings, frame layout and checksum verified bit-for-bit against every capture.
 //
 // Frame layout (64 bits = 8 bytes, MSB-first):
 //   B0–B3 : Remote ID    (32-bit, unique per remote)
@@ -12,99 +12,94 @@
 //   bit 0 → HIGH 280 µs + LOW 600 µs   (short high, long low)
 //   bit 1 → HIGH 600 µs + LOW 280 µs   (long high, short low)
 //
-// Preamble (SOF): LOW ~4980 µs gap + HIGH ~5000 µs sync + LOW ~615 µs lead-in, before every frame.
+// Preamble (per frame): LOW ~4980 µs gap + HIGH ~5000 µs sync + LOW ~615 µs lead-in.
+// The sync pulse is required — motors reject frames without it.
+
+import { bitsFromNumber, bytesFromBits } from '../../lib/bits';
 
 export const FRAME_BITS = 64;
 
-// Channel masks (B4/B5 as 16-bit LE value)
-export const CH_1   = 0x0001;
-export const CH_2   = 0x0002;
-export const CH_3   = 0x0004;
-export const CH_4   = 0x0008;
-export const CH_ALL = 0xFFFF;
+/** Channel mask addressing every channel at once ("all" button on the remote). */
+export const CHANNEL_ALL = 0xffff;
 
-// Primary command bytes
-export const CMD_OPEN  = 0x0B;
-export const CMD_CLOSE = 0x43;
+/** Number of channels addressable by the 16-bit channel mask. */
+export const CHANNEL_COUNT = 16;
 
-// STOP: the motor ignores the initial code (0x23) and only responds to the
-// sustained code (0x5A). We send both in sequence to mirror the physical remote.
-export const CMD_STOP_INITIAL   = 0x23;
-export const CMD_STOP_SUSTAINED = 0x5A;
+const CHECKSUM_MAGIC = 0x5d;
 
-// Hold/repeat variants for open/close (received from physical remote via sniffer).
-const CMD_OPEN_HOLD    = 0x8B;  // CMD_OPEN  | 0x80
-const CMD_OPEN_SUSTAIN = 0x55;  // sustained hold phase
-const CMD_CLOSE_HOLD   = 0xC3;  // CMD_CLOSE | 0x80
+export const CMD = {
+  OPEN: 0x0b,
+  CLOSE: 0x43,
+  /** First burst phase of a stop press. The motor ignores this code. */
+  STOP_INITIAL: 0x23,
+  /** Sustained phase of a stop press. This is what actually stops the motor. */
+  STOP_SUSTAINED: 0x5a,
+} as const;
+
+/**
+ * Burst variants the remote emits while a button is held, mapped to the
+ * command that represents the action. Received via the sniffer only —
+ * Homey never transmits these (except STOP_INITIAL, for burst fidelity).
+ */
+const HOLD_VARIANTS: Readonly<Record<number, number>> = {
+  0x8b: CMD.OPEN, // OPEN | 0x80 repeat flag
+  0x55: CMD.OPEN, // sustained hold phase
+  0xc3: CMD.CLOSE, // CLOSE | 0x80 repeat flag
+  [CMD.STOP_INITIAL]: CMD.STOP_SUSTAINED,
+};
 
 export interface GumaxShutterFrame {
-  remoteId:    number;  // 32-bit remote address
-  channelMask: number;  // 16-bit channel bitmap
-  command:     number;  // 8-bit command (may be a hold variant)
+  /** 32-bit remote address. */
+  readonly remoteId: number;
+  /** 16-bit channel bitmap. */
+  readonly channelMask: number;
+  /** 8-bit command byte; may be a hold variant. */
+  readonly command: number;
 }
 
-function numberToBits(value: number, length: number): number[] {
-  const bits: number[] = [];
-  for (let i = length - 1; i >= 0; i--) bits.push((value >> i) & 1);
-  return bits;
+function payloadBytes(remoteId: number, channelMask: number, command: number): number[] {
+  return [
+    (remoteId >>> 24) & 0xff,
+    (remoteId >>> 16) & 0xff,
+    (remoteId >>> 8) & 0xff,
+    remoteId & 0xff,
+    channelMask & 0xff, // B4 = low byte (little-endian mask)
+    (channelMask >>> 8) & 0xff,
+    command & 0xff,
+  ];
 }
 
-function bitsToNumber(bits: number[]): number {
-  return bits.reduce((acc, b) => (acc << 1) | b, 0);
-}
-
-function calcChecksum(b0: number, b1: number, b2: number, b3: number,
-                      b4: number, b5: number, b6: number): number {
-  return (b0 + b1 + b2 + b3 + b4 + b5 + b6 + 0x5D) & 0xFF;
+function checksum(bytes: readonly number[]): number {
+  return (bytes.reduce((sum, byte) => sum + byte, 0) + CHECKSUM_MAGIC) & 0xff;
 }
 
 export function buildFrame(remoteId: number, channelMask: number, command: number): number[] {
-  const b0 = (remoteId >>> 24) & 0xFF;
-  const b1 = (remoteId >>> 16) & 0xFF;
-  const b2 = (remoteId >>>  8) & 0xFF;
-  const b3 =  remoteId         & 0xFF;
-  const b4 =  channelMask      & 0xFF;
-  const b5 = (channelMask >>> 8) & 0xFF;
-  const b6 =  command          & 0xFF;
-  const b7 = calcChecksum(b0, b1, b2, b3, b4, b5, b6);
-
-  const bits: number[] = [];
-  for (const byte of [b0, b1, b2, b3, b4, b5, b6, b7]) {
-    for (let i = 7; i >= 0; i--) bits.push((byte >> i) & 1);
-  }
-  return bits;
+  const bytes = payloadBytes(remoteId, channelMask, command);
+  bytes.push(checksum(bytes));
+  return bytes.flatMap((byte) => bitsFromNumber(byte, 8));
 }
 
 export function decodeFrame(payload: number[]): GumaxShutterFrame | null {
   if (payload.length !== FRAME_BITS) return null;
 
-  const bytes: number[] = [];
-  for (let i = 0; i < 8; i++) {
-    bytes.push(bitsToNumber(payload.slice(i * 8, (i + 1) * 8)));
-  }
-  const [b0, b1, b2, b3, b4, b5, b6, b7] = bytes;
+  const bytes = bytesFromBits(payload);
+  const data = bytes.slice(0, 7);
+  if (bytes[7] !== checksum(data)) return null;
 
-  if (b7 !== calcChecksum(b0, b1, b2, b3, b4, b5, b6)) return null;
-
+  const [b0, b1, b2, b3, maskLow, maskHigh, command] = data;
   return {
-    remoteId:    ((b0 << 24) | (b1 << 16) | (b2 << 8) | b3) >>> 0,
-    channelMask: b4 | (b5 << 8),
-    command:     b6,
+    remoteId: ((b0 << 24) | (b1 << 16) | (b2 << 8) | b3) >>> 0,
+    channelMask: maskLow | (maskHigh << 8),
+    command,
   };
 }
 
-/** Normalize hold/repeat variants to the corresponding primary command. */
-export function normalizePrimary(command: number): number {
-  if (command === CMD_OPEN_HOLD || command === CMD_OPEN_SUSTAIN) return CMD_OPEN;
-  if (command === CMD_CLOSE_HOLD) return CMD_CLOSE;
-  if (command === CMD_STOP_INITIAL || command === CMD_STOP_SUSTAINED) return CMD_STOP_SUSTAINED;
-  return command;
+/** Normalize hold/repeat burst variants to the command representing the action. */
+export function normalizeCommand(command: number): number {
+  return HOLD_VARIANTS[command] ?? command;
 }
 
-/**
- * True when the received channel mask overlaps with the device's paired mask.
- * Handles "all channels" (0xFFFF) transparently.
- */
-export function channelMatches(rxMask: number, deviceMask: number): boolean {
-  return (rxMask & deviceMask) !== 0;
+/** True when two channel masks overlap. Handles "all channels" (0xFFFF) transparently. */
+export function channelsOverlap(maskA: number, maskB: number): boolean {
+  return (maskA & maskB) !== 0;
 }

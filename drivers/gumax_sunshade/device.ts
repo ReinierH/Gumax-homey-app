@@ -1,89 +1,103 @@
 import Homey from 'homey';
-import {
-  buildFrame, decodeFrame,
-  CMD_OPEN, CMD_CLOSE, CMD_STOP_INITIAL, CMD_STOP_SUSTAINED,
-  channelMatches, normalizePrimary,
-} from './protocol';
+import type { Signal433 } from 'homey';
+import { CMD, buildFrame, channelsOverlap, decodeFrame, normalizeCommand } from './protocol';
 
 const SIGNAL_TX_ID = 'gumax_shutter';
 const SIGNAL_RX_ID = 'gumax_shutter_rx';
+const STORE_REMOTE_ID = 'remoteId';
+const STORE_CHANNEL_MASK = 'channelMask';
 
-class GumaxShadeDevice extends Homey.Device {
-  private signalRx!: ReturnType<typeof this.homey.rf.getSignal433>;
+/** Maps windowcoverings_state values to the primary command to transmit. */
+const STATE_TO_COMMAND: Readonly<Record<string, number>> = {
+  up: CMD.OPEN,
+  down: CMD.CLOSE,
+};
 
-  private readonly onSignalPayload = (payload: number[], first: boolean): void => {
+/** Maps received (normalized) commands back to windowcoverings_state values. */
+const COMMAND_TO_STATE: Readonly<Record<number, string>> = {
+  [CMD.OPEN]: 'up',
+  [CMD.CLOSE]: 'down',
+  [CMD.STOP_SUSTAINED]: 'idle',
+};
+
+class GumaxSunshadeDevice extends Homey.Device {
+  private signalRx?: Signal433;
+
+  /**
+   * Mirror commands sent by the physical remote into the device state.
+   * Declared as an arrow property so the exact same reference can be
+   * removed again in {@link detachRx}.
+   */
+  private readonly handleRxPayload = (payload: number[], first: boolean): void => {
     if (!first) return;
 
     const frame = decodeFrame(payload);
-    if (!frame) return;
+    if (frame === null) return;
 
-    const remoteId    = this.getStoreValue('remoteId')    as number | null;
-    const channelMask = this.getStoreValue('channelMask') as number | null;
+    if (frame.remoteId !== this.getStoreValue(STORE_REMOTE_ID)) return;
 
-    if (frame.remoteId !== remoteId) return;
-    if (channelMask == null || !channelMatches(frame.channelMask, channelMask)) return;
+    const ownMask = this.getStoreValue(STORE_CHANNEL_MASK) as number | null;
+    if (typeof ownMask !== 'number' || !channelsOverlap(frame.channelMask, ownMask)) return;
 
-    const primary = normalizePrimary(frame.command);
-    this.log(`RX cmd=0x${frame.command.toString(16)} → primary=0x${primary.toString(16)}`);
-    this.updateStateFromCommand(primary).catch(this.error.bind(this));
+    const command = normalizeCommand(frame.command);
+    const state = COMMAND_TO_STATE[command];
+    if (state === undefined) return;
+
+    this.log(`RX cmd=0x${frame.command.toString(16)} → state=${state}`);
+    this.setCapabilityValue('windowcoverings_state', state).catch((err) => this.error(err));
   };
 
-  async onInit(): Promise<void> {
-    this.log(`Gumax sunshade device initialized: ${this.getName()}`);
-    this.registerCapabilityListener('windowcoverings_state', this.onWindowCoveringsState.bind(this));
+  override async onInit(): Promise<void> {
+    this.log(`Gumax sunshade initialized: ${this.getName()}`);
+
+    this.registerCapabilityListener('windowcoverings_state', (value: string) =>
+      this.onCapabilityWindowCoveringsState(value),
+    );
 
     this.signalRx = this.homey.rf.getSignal433(SIGNAL_RX_ID);
-    this.signalRx.on('payload', this.onSignalPayload);
+    this.signalRx.on('payload', this.handleRxPayload);
   }
 
-  async onDeleted(): Promise<void> {
-    this.signalRx.removeListener('payload', this.onSignalPayload);
+  override async onUninit(): Promise<void> {
+    this.detachRx();
   }
 
-  private async updateStateFromCommand(command: number): Promise<void> {
-    switch (command) {
-      case CMD_OPEN:
-        await this.setCapabilityValue('windowcoverings_state', 'up');
-        break;
-      case CMD_CLOSE:
-        await this.setCapabilityValue('windowcoverings_state', 'down');
-        break;
-      case CMD_STOP_SUSTAINED:
-        await this.setCapabilityValue('windowcoverings_state', 'idle');
-        break;
+  override async onDeleted(): Promise<void> {
+    this.detachRx();
+  }
+
+  private detachRx(): void {
+    this.signalRx?.removeListener('payload', this.handleRxPayload);
+  }
+
+  private async onCapabilityWindowCoveringsState(state: string): Promise<void> {
+    if (state === 'idle') {
+      // Mirror the physical remote's stop burst: the initial code first,
+      // then the sustained code — the motor only acts on the latter.
+      await this.transmit(CMD.STOP_INITIAL);
+      await this.transmit(CMD.STOP_SUSTAINED);
+      return;
     }
-  }
 
-  private async onWindowCoveringsState(value: string): Promise<void> {
-    switch (value) {
-      case 'up':   return this.transmit(CMD_OPEN);
-      case 'down': return this.transmit(CMD_CLOSE);
-      case 'idle': return this.transmitStop();
-      default: throw new Error(`Unknown state: ${value}`);
-    }
-  }
-
-  // Mirrors the physical remote burst: ~10× 0x23 (initial) then ~10× 0x5A (sustained).
-  // The motor only responds to 0x5A; the initial burst is sent for fidelity.
-  private async transmitStop(): Promise<void> {
-    await this.transmit(CMD_STOP_INITIAL);
-    await this.transmit(CMD_STOP_SUSTAINED);
+    const command = STATE_TO_COMMAND[state];
+    if (command === undefined) throw new Error(`Unknown state: ${state}`);
+    await this.transmit(command);
   }
 
   private async transmit(command: number): Promise<void> {
-    const remoteId    = this.getStoreValue('remoteId')    as number | null;
-    const channelMask = this.getStoreValue('channelMask') as number | null;
+    const remoteId = this.getStoreValue(STORE_REMOTE_ID) as number | null;
+    const channelMask = this.getStoreValue(STORE_CHANNEL_MASK) as number | null;
 
-    if (remoteId == null || channelMask == null) {
-      throw new Error('Device not paired: missing remoteId or channelMask');
+    if (typeof remoteId !== 'number' || typeof channelMask !== 'number') {
+      throw new Error('Device is missing its remote ID or channel — please remove and pair it again');
     }
 
-    const frame  = buildFrame(remoteId, channelMask, command);
-    const signal = this.homey.rf.getSignal433(SIGNAL_TX_ID);
-
-    this.log(`TX cmd=0x${command.toString(16)} remote=0x${remoteId.toString(16).padStart(8, '0')} mask=0x${channelMask.toString(16).padStart(4, '0')}`);
-    await signal.tx(frame);
+    this.log(
+      `TX cmd=0x${command.toString(16)} remote=0x${remoteId.toString(16).padStart(8, '0')} ` +
+        `mask=0x${channelMask.toString(16).padStart(4, '0')}`,
+    );
+    await this.homey.rf.getSignal433(SIGNAL_TX_ID).tx(buildFrame(remoteId, channelMask, command));
   }
 }
 
-export = GumaxShadeDevice;
+export = GumaxSunshadeDevice;

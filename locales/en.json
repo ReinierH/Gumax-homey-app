@@ -6,7 +6,10 @@
     },
     "shade": {
       "timeout": "Timed out: no signal received. Please try again.",
-      "device_name": "Gumax Sunshade"
+      "device_name": "Gumax Sunshade",
+      "channel": "Channel",
+      "channels": "Channels",
+      "all_channels": "All channels"
     }
   }
 }

@@ -4,6 +4,12 @@
     "module": "CommonJS",
     "target": "ES2019",
     "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "outDir": ".homeybuild",
@@ -14,6 +20,7 @@
   },
   "include": [
     "app.ts",
+    "lib/**/*.ts",
     "drivers/**/*.ts"
   ],
   "exclude": [

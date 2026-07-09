@@ -6,7 +6,10 @@
     },
     "shade": {
       "timeout": "Time-out: geen signaal ontvangen. Probeer opnieuw.",
-      "device_name": "Gumax Zonwering"
+      "device_name": "Gumax Zonwering",
+      "channel": "Kanaal",
+      "channels": "Kanalen",
+      "all_channels": "Alle kanalen"
     }
   }
 }
