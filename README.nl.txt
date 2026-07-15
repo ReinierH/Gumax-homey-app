@@ -1,6 +1,6 @@
 Bedien uw Gumax veranda met Homey.
 
-Met deze app neemt Homey uw Gumax ASY-3501-1 afstandsbediening over, zodat u uw Gumax LED-verlichting en elektrische zonwering kunt bedienen via de Homey app, met spraakassistenten, of in uw Flows.
+Met deze app neemt Homey uw Gumax afstandsbediening over, zodat u uw Gumax LED-verlichting en elektrische zonwering kunt bedienen via de Homey app, met spraakassistenten, of in uw Flows.
 
 LED SPOTS
 Schakel uw verandaverlichting aan of uit en kies uit zes helderheidsniveaus. Wijzigingen via de fysieke afstandsbediening worden weergegeven in Homey, zodat de app altijd de werkelijke status toont.

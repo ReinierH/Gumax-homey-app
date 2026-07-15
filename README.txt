@@ -1,6 +1,6 @@
 Control your Gumax veranda with Homey.
 
-This app lets Homey take over your Gumax ASY-3501-1 remote control, so you can operate your Gumax LED lighting and motorised sunshades from the Homey app, with voice assistants, or in your Flows.
+This app lets Homey take over your Gumax remote control, so you can operate your Gumax LED lighting and motorised sunshades from the Homey app, with voice assistants, or in your Flows.
 
 LED SPOTS
 Switch your veranda lighting on or off and choose from six brightness levels. Changes made with the physical remote are reflected in Homey, so the app always shows the actual state.

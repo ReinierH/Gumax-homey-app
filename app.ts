@@ -2,7 +2,7 @@ import Homey from 'homey';
 
 /**
  * Gumax app — controls Gumax LED spots and motorised sunshades over 433 MHz
- * by replaying the protocol of the original ASY-3501-1 remotes.
+ * by replaying the protocol of the original Gumax remotes.
  */
 class GumaxApp extends Homey.App {
   override async onInit(): Promise<void> {

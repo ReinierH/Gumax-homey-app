@@ -1,4 +1,4 @@
-// Gumax ASY-3501-1 remote — LED lighting protocol
+// Gumax remote — LED lighting protocol
 // Reverse engineered from 10 VCD captures via Homey's built-in 433 MHz receiver.
 // All captures decoded at 100% confidence with consistent 24-bit frames.
 //

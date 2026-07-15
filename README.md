@@ -1,12 +1,12 @@
 # Gumax Homey App
 
-Control Gumax LED spots and motorised sunshading systems from [Homey](https://homey.app) by learning your existing ASY-3501-1 remote.
+Control Gumax LED spots and motorised sunshading systems from [Homey](https://homey.app) by learning your existing Gumax remote.
 
 ## Supported devices
 
 | Device | Capabilities |
 |---|---|
-| Gumax LED Spot (ASY-3501-1) | On/off, 6 brightness levels |
+| Gumax LED Spot | On/off, 6 brightness levels |
 | Gumax Sunshade / Shutter | Open, close, stop — up to 16 channels |
 
 The app works by learning your existing physical remote. No hub or Wi-Fi adapter required — Homey's built-in 433 MHz radio handles all communication.
@@ -57,7 +57,7 @@ The app works by learning your existing physical remote. No hub or Wi-Fi adapter
 #### LED Spot
 
 1. In Homey, go to **Devices → Add device → Gumax → Gumax LED Spot**.
-2. Press **Start**, then press any button on your ASY-3501-1 remote within 30 seconds.
+2. Press **Start**, then press any button on your Gumax remote within 30 seconds.
 3. Homey learns the remote ID and adds the device.
 
 #### Sunshade / Shutter
