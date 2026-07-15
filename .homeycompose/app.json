@@ -1,9 +1,11 @@
 {
   "id": "nl.computhings.gumax",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "compatibility": ">=12.0.0",
   "sdk": 3,
-  "platforms": ["local"],
+  "platforms": [
+    "local"
+  ],
   "name": {
     "en": "Gumax",
     "nl": "Gumax"
@@ -13,11 +15,33 @@
     "nl": "Bedien Gumax LED spots en zonwering door uw bestaande ASY-3501-1 afstandsbediening in te leren"
   },
   "tags": {
-    "en": ["gumax", "led", "light", "spot", "sunshade", "blind", "rf", "433"],
-    "nl": ["gumax", "led", "lamp", "spot", "zonwering", "screen", "rf", "433"]
+    "en": [
+      "gumax",
+      "led",
+      "light",
+      "spot",
+      "sunshade",
+      "blind",
+      "rf",
+      "433"
+    ],
+    "nl": [
+      "gumax",
+      "led",
+      "lamp",
+      "spot",
+      "zonwering",
+      "screen",
+      "rf",
+      "433"
+    ]
   },
-  "category": ["appliances"],
-  "permissions": ["homey:wireless:433"],
+  "category": [
+    "appliances"
+  ],
+  "permissions": [
+    "homey:wireless:433"
+  ],
   "images": {
     "small": "/assets/images/small.png",
     "large": "/assets/images/large.png",
