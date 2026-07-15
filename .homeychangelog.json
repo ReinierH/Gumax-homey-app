@@ -1,5 +1,8 @@
 {
   "1.0.1": {
     "en": "added support for shades"
+  },
+  "1.0.2": {
+    "en": "removed specific remote names"
   }
 }
