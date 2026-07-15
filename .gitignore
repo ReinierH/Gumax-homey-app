@@ -2,3 +2,4 @@ node_modules/
 .homeybuild/
 *.js
 !*.config.js
+.DS_Store
