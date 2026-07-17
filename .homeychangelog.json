@@ -4,5 +4,8 @@
   },
   "1.0.2": {
     "en": "removed specific remote names"
+  },
+  "1.1.0": {
+    "en": "changed text and driver icons according to guidelines"
   }
 }
